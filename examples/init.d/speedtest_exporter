@@ -26,12 +26,12 @@ rcvar=speedtest_exporter_enable
 
 load_rc_config $name
 
-: ${speedtest_enable:="NO"}
-: ${speedtest_user:="nobody"}
-: ${speedtest_group:="nobody"}
-: ${speedtest_args:=""}
-: ${speedtest_listen_address:=":9112"}
-: ${speedtest_telemetry_path:="/metrics"}
+: ${speedtest_exporter_enable:="NO"}
+: ${speedtest_exporter_user:="nobody"}
+: ${speedtest_exporter_group:="nobody"}
+: ${speedtest_exporter_args:=""}
+: ${speedtest_exporter_listen_address:=":9112"}
+: ${speedtest_exporter_telemetry_path:="/metrics"}
 
 
 pidfile=/var/run/speedtest_exporter.pid
@@ -49,8 +49,8 @@ speedtest_exporter_startprecmd()
 {
     if [ ! -e ${pidfile} ]; then
         install \
-            -o ${speedtest_user} \
-            -g ${speedtest_group} \
+            -o ${speedtest_exporter_user} \
+            -g ${speedtest_exporter_group} \
             /dev/null ${pidfile};
     fi
 }
