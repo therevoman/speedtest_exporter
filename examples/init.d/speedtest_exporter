@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# PROVIDE: speedtest_exporter
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+#
+# Add the following lines to /etc/rc.conf.local or /etc/rc.conf
+# to enable this service:
+#
+# speedtest_enable (bool):          Set to NO by default.
+#               Set it to YES to enable speedtest.
+# speedtest_user (string):          Set user that speedtest will run under
+#               Default is "nobody".
+# speedtest_group (string):         Set group that speedtest will run under
+#               Default is "nobody".
+# speedtest_args (string):          Set extra arguments to pass to speedtest
+#               Default is "".
+# speedtest_listen_address (string):Set ip:port that speedtest will listen on
+#               Address to listen on for web interface and telemetry. (default ":9112")
+# speedtest_telemetry_path string
+#               Path under which to expose metrics. (default "/metrics")
+. /etc/rc.subr
+
+name=speedtest
+rcvar=speedtest_enable
+
+load_rc_config $name
+
+: ${speedtest_enable:="NO"}
+: ${speedtest_user:="nobody"}
+: ${speedtest_group:="nobody"}
+: ${speedtest_args:=""}
+: ${speedtest_listen_address:=":9112"}
+: ${speedtest_telemetry_path:="/metrics"}
+
+
+pidfile=/var/run/speedtest.pid
+command="/usr/sbin/daemon"
+procname="/usr/local/bin/speedtest"
+command_args="-f -p ${pidfile} -T ${name} \
+    /usr/bin/env ${procname} \
+    -web.listen-address=${speedtest_listen_address} \
+    -web.telemetry-path=${speedtest_telemetry_path} \
+    ${speedtest_args}"
+
+start_precmd=speedtest_startprecmd
+
+speedtest_startprecmd()
+{
+    if [ ! -e ${pidfile} ]; then
+        install \
+            -o ${speedtest_user} \
+            -g ${speedtest_group} \
+            /dev/null ${pidfile};
+    fi
+}
+
+load_rc_config $name
+run_rc_command "$1"
