@@ -39,9 +39,9 @@ command="/usr/sbin/daemon"
 procname="/usr/local/bin/speedtest_exporter"
 command_args="-f -p ${pidfile} -T ${name} \
     /usr/bin/env ${procname} \
-    -web.listen-address=${speedtest_listen_address} \
-    -web.telemetry-path=${speedtest_telemetry_path} \
-    ${speedtest_args}"
+    -web.listen-address=${speedtest_exporter_listen_address} \
+    -web.telemetry-path=${speedtest_exporter_telemetry_path} \
+    ${speedtest_exporter_args}"
 
 start_precmd=speedtest_exporter_startprecmd
 
