@@ -21,8 +21,8 @@
 #               Path under which to expose metrics. (default "/metrics")
 . /etc/rc.subr
 
-name=speedtest
-rcvar=speedtest_enable
+name=speedtest_exporter
+rcvar=speedtest_exporter_enable
 
 load_rc_config $name
 
@@ -34,18 +34,18 @@ load_rc_config $name
 : ${speedtest_telemetry_path:="/metrics"}
 
 
-pidfile=/var/run/speedtest.pid
+pidfile=/var/run/speedtest_exporter.pid
 command="/usr/sbin/daemon"
-procname="/usr/local/bin/speedtest"
+procname="/usr/local/bin/speedtest_exporter"
 command_args="-f -p ${pidfile} -T ${name} \
     /usr/bin/env ${procname} \
     -web.listen-address=${speedtest_listen_address} \
     -web.telemetry-path=${speedtest_telemetry_path} \
     ${speedtest_args}"
 
-start_precmd=speedtest_startprecmd
+start_precmd=speedtest_exporter_startprecmd
 
-speedtest_startprecmd()
+speedtest_exporter_startprecmd()
 {
     if [ ! -e ${pidfile} ]; then
         install \
